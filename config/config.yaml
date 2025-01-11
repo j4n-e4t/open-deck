@@ -1,0 +1,33 @@
+icon_dir: <icon_dir>
+font_dir: <font_dir>
+script_dir: <script_dir>
+
+homeassistant:
+  url: <homeassistant_url>
+  token: <homeassistant_token>
+
+stream_deck:
+  brightness: 30
+  key_margin: 10
+  font:
+    size: 14
+    style: <font_style>
+    color: white
+
+home_page: 0
+
+pages:
+  - page_id: 0
+    keys:
+      - key_id: 0
+        type: blank
+      - key_id: 1
+        type: clock
+      - key_id: 2
+        type: blank
+      - key_id: 3
+        type: blank
+      - key_id: 4
+        type: blank
+      - key_id: 5
+        type: blank
