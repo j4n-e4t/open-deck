@@ -40,6 +40,7 @@ end tell""",
                 )
             case _:
                 raise ValueError(f"Invalid action: {self.action_data['action']}")
+        self.set_image()
 
     def set_image(self):
         if self.action_data["action"] == "play/pause":
