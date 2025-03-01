@@ -69,10 +69,10 @@ def main():
     try:
         print("Press Ctrl+C to exit...")
         while True:
-            for key in current_keys.values():
+            for key in list(current_keys.values()):
                 if hasattr(key, "update"):
                     key.update()
-            time.sleep(0.1)
+            time.sleep(0.2)
     except KeyboardInterrupt:
         signal_handler(None, None)
 

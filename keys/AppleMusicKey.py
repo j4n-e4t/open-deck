@@ -1,5 +1,5 @@
 import subprocess
-
+import time
 from PIL import Image, ImageDraw, ImageFont
 from keys.Key import Key
 from config import config
@@ -8,6 +8,7 @@ from StreamDeck.ImageHelpers import PILHelper
 
 class AppleMusicKey(Key):
     def __init__(self, key_config: dict, stream_deck):
+        self.last_update = None
         if key_config["action_data"]["action"] == "play/pause":
             self.key_config = key_config
             self.key_config["icon"] = "play.png"
@@ -43,9 +44,20 @@ end tell""",
         self.set_image()
 
     def set_image(self):
+        self.last_update = time.time()
         if self.action_data["action"] == "play/pause":
             player_state = subprocess.run(
-                ["osascript", "-e", 'tell application "Music" to get player state'],
+                [
+                    "osascript",
+                    "-e",
+                    """
+                    if application "Music" is running then
+                        tell application "Music" to get player state
+                    else
+                        return "stopped"
+                    end if
+                """,
+                ],
                 capture_output=True,
                 text=True,
             )
@@ -90,3 +102,10 @@ end tell""",
 
         sd_image = PILHelper.to_native_key_format(self.stream_deck, image)
         self.stream_deck.set_key_image(self.key_id, sd_image)
+
+    def update(self):
+        if (
+            self.action_data["action"] == "play/pause"
+            and time.time() - self.last_update > 1
+        ):
+            self.set_image()

@@ -1,4 +1,0 @@
-pyyaml==6.0.2
-streamdeck==0.9.6
-requests==2.32.2
-Pillow==10.3.0
