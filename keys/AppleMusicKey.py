@@ -1,4 +1,3 @@
-import subprocess
 import time
 from PIL import Image, ImageDraw, ImageFont
 from keys.Key import Key
@@ -7,7 +6,8 @@ from StreamDeck.ImageHelpers import PILHelper
 
 
 class AppleMusicKey(Key):
-    def __init__(self, key_config: dict, stream_deck):
+    def __init__(self, key_config: dict, stream_deck, provider):
+        self.provider = provider
         self.last_update = None
         if key_config["action_data"]["action"] == "play/pause":
             self.key_config = key_config
@@ -15,30 +15,13 @@ class AppleMusicKey(Key):
         super().__init__(key_config, stream_deck)
 
     def action(self) -> None:
-
         match self.action_data["action"]:
             case "play/pause":
-                subprocess.run(
-                    [
-                        "osascript",
-                        "-e",
-                        """tell application "Music"
-    if (player state as string) is "playing" then
-        pause
-    else
-        play
-    end if
-end tell""",
-                    ]
-                )
+                self.provider.play_pause()
             case "next":
-                subprocess.run(
-                    ["osascript", "-e", 'tell application "Music" to next track']
-                )
+                self.provider.next()
             case "previous":
-                subprocess.run(
-                    ["osascript", "-e", 'tell application "Music" to previous track']
-                )
+                self.provider.previous()
             case _:
                 raise ValueError(f"Invalid action: {self.action_data['action']}")
         self.set_image()
@@ -46,25 +29,9 @@ end tell""",
     def set_image(self):
         self.last_update = time.time()
         if self.action_data["action"] == "play/pause":
-            player_state = subprocess.run(
-                [
-                    "osascript",
-                    "-e",
-                    """
-                    if application "Music" is running then
-                        tell application "Music" to get player state
-                    else
-                        return "stopped"
-                    end if
-                """,
-                ],
-                capture_output=True,
-                text=True,
-            )
-
             icon = Image.open(
                 config["icon_dir"] + "/" + self.key_config["action_data"]["pause_icon"]
-                if player_state.stdout.strip() == "playing"
+                if self.provider.is_playing()
                 else config["icon_dir"]
                 + "/"
                 + self.key_config["action_data"]["play_icon"]

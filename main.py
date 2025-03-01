@@ -5,8 +5,32 @@ import sys
 import time
 from config import config
 from keys.JumpKey import JumpKey
+from providers.HomeAssistantProvider import HomeAssistantProvider
+from providers.AppleMusicProvider import AppleMusicProvider
+from providers.MacOSApplicationProvider import MacOSApplicationProvider
 
 current_keys = {}
+providers = {
+    "homeassistant": None,
+    "apple_music": None,
+    "application": None,
+}
+
+
+def initialize_providers():
+    for provider in providers.keys():
+        match provider:
+            case "homeassistant":
+                providers["homeassistant"] = HomeAssistantProvider(
+                    config["homeassistant"]["url"], config["homeassistant"]["token"]
+                )
+                providers["homeassistant"].connect()
+            case "apple_music":
+                providers["apple_music"] = AppleMusicProvider()
+            case "application":
+                providers["application"] = MacOSApplicationProvider()
+            case _:
+                pass
 
 
 def signal_handler(sig, frame):
@@ -14,6 +38,10 @@ def signal_handler(sig, frame):
 
     stream_deck.reset()
     stream_deck.close()
+
+    for provider in providers.values():
+        if provider is not None and hasattr(provider, "close"):
+            provider.close()
 
     sys.exit(0)
 
@@ -50,8 +78,9 @@ def main():
     stream_deck.open()
     stream_deck.reset()
 
+    initialize_providers()
     global renderer
-    renderer = KeyRenderer(stream_deck)
+    renderer = KeyRenderer(stream_deck, providers)
 
     current_page = config["home_page"]
 

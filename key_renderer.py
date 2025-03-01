@@ -1,4 +1,3 @@
-from config import config
 from keys.ScriptKey import ScriptKey
 from keys.JumpKey import JumpKey
 from keys.AppleMusicKey import AppleMusicKey
@@ -10,8 +9,9 @@ from keys.Key import Key
 
 
 class KeyRenderer:
-    def __init__(self, stream_deck):
+    def __init__(self, stream_deck, providers: dict):
         self.stream_deck = stream_deck
+        self.providers = providers
 
     def key(self, key_config: dict) -> Key:
         key = None
@@ -19,16 +19,19 @@ class KeyRenderer:
             case "script":
                 key = ScriptKey(key_config, self.stream_deck)
             case "apple_music":
-                key = AppleMusicKey(key_config, self.stream_deck)
+                key = AppleMusicKey(
+                    key_config, self.stream_deck, self.providers["apple_music"]
+                )
             case "home_assistant":
                 key = HomeAssistantKey(
                     key_config,
-                    config["homeassistant"]["url"],
-                    config["homeassistant"]["token"],
                     self.stream_deck,
+                    self.providers["homeassistant"],
                 )
             case "application":
-                key = ApplicationKey(key_config, self.stream_deck)
+                key = ApplicationKey(
+                    key_config, self.stream_deck, self.providers["application"]
+                )
             case "clock":
                 key = ClockKey(key_config, self.stream_deck)
             case "jump":

@@ -40,6 +40,7 @@ config_schema = Schema(
                                 "type": str,
                                 Optional("action_data"): {
                                     Optional("page"): int,
+                                    Optional("application"): str,
                                     Optional("domain"): str,
                                     Optional("action"): str,
                                     Optional("entity"): str,
