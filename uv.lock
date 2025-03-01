@@ -166,7 +166,7 @@ wheels = [
 ]
 
 [[package]]
-name = "open-stream-deck"
+name = "py-deck"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

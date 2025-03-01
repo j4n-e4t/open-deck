@@ -1,4 +1,4 @@
-# Open Deck
+# 🐍 PY Deck
 
 ## Installation
 
@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ## Configuration
 
 ```bash
-cp config/* ~/.config/open-deck/
+cp config/* ~/.config/py-deck/
 ```
 
 Add icons and fonts to the config directory.

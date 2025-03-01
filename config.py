@@ -1,7 +1,7 @@
 import yaml
 from schema import Schema, Optional, SchemaError
 
-CONFIG_PATH = "/Users/julian/.config/open-deck/config.yaml"
+CONFIG_PATH = "/Users/julian/.config/py-deck/config.yaml"
 
 config_schema = Schema(
     {
